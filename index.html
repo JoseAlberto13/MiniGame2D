@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tank Battle Game</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="game-container">
+    <div id="start-menu" class="start-menu">
+      <h1>Tank Battle Game</h1>
+      <button id="startButton" class="start-button">Iniciar Juego</button>
+    </div>
+
+    <div id="game-content" class="game-content" style="display: none;">
+      <div class="player-info">
+        <div class="player-box" id="player1-info">
+          <h3>Jugador 1</h3>
+          <p>Nombre: <span id="player1-name">Player 1</span></p>
+          <p>Vida: <span id="player1-health">100</span></p>
+        </div>
+        
+        <div class="player-box" id="player2-info">
+          <h3>Jugador 2</h3>
+          <p>Nombre: <span id="player2-name">Player 2</span></p>
+          <p>Vida: <span id="player2-health">100</span></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="canvas-container">
+      <canvas id="gameCanvas" width="800" height="400"></canvas>
+    </div>
+
+    <div class="game-controls">
+      <div class="turn-info">
+        <p>Turno del jugador <span id="currentPlayer">1</span></p>
+      </div>
+      <div class="power-info">
+        <p>Potencia: <span id="powerDisplay">0</span></p>
+      </div>
+      <div class="angle-info">
+        <p>Ángulo: <span id="angleDisplay">45</span>°</p>
+      </div>
+    </div>
+
+    <div class="controls-help">
+      <h4>Controles:</h4>
+      <p>Movimiento: A/D o ← →</p>
+      <p>Ángulo: W/S o ↑ ↓</p>
+      <p>Disparo: Mantén ESPACIO</p>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
