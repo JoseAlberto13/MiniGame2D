@@ -10,188 +10,108 @@ body {
   align-items: center;
 }
 
-.game-container {
+.container {
   width: 100%;
   max-width: 1200px;
   padding: 10px;
-  box-sizing: border-box;
 }
 
-.start-menu {
+.menu {
   text-align: center;
-  padding: 50px;
-  background-color: rgba(0, 0, 0, 0.8);
-  border-radius: 15px;
-  margin: 50px auto;
+  padding: 40px;
+  background: rgba(7, 7, 22, 0.8);
+  border-radius: 25px;
+  margin: 0 auto;
   max-width: 500px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-.start-menu h1 {
-  color: #ecf0f1;
-  margin-bottom: 30px;
-  font-size: 2.5em;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+.menu h1 {
+  font-size: 3em;
+  margin-bottom: 1px;
 }
 
-.game-options {
-  margin-bottom: 30px;
-}
-
-.player-selection {
+.mode-buttons {
   display: flex;
-  justify-content: space-around;
+  gap: 14px;
+  justify-content: center;
   margin: 20px 0;
-  gap: 10px;
 }
 
-.mode-button {
-  padding: 12px 24px;
-  font-size: 18px;
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.mode-button:hover {
-  background-color: #2980b9;
-  transform: translateY(-2px);
-}
-
-.mode-button.selected {
-  background-color: #e74c3c;
-  transform: scale(1.1);
-}
-
-.start-button {
-  padding: 15px 30px;
+.btn {
+  padding: 16px 30px;
   font-size: 24px;
-  background-color: #27ae60;
-  color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  background: #3498db;
+  color: white;
 }
 
-.start-button:hover:not([disabled]) {
-  background-color: #219a52;
-  transform: translateY(-2px);
+.btn:hover {
+  background: #2980b9;
+  transform: translateY(-5px);
 }
 
-.start-button[disabled] {
-  background-color: #95a5a6;
+.btn.selected {
+  background: #e74c3c;
+}
+
+.btn:disabled {
+  background: #95a5a6;
   cursor: not-allowed;
 }
 
-.game-content {
-  display: flex;
+.game {
+  display: none;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
 }
 
-.player-info {
+.info {
   display: flex;
+  font-size: 1em;
   justify-content: space-between;
   align-items: center;
-}
-
-.team-box {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
   padding: 15px;
-  width: 220px;
-  text-align: center;
-  backdrop-filter: blur(10px);
+  border-radius: 10px;
 }
 
-#team1-info {
+.team {
+  min-width: 150px;
+  text-align: center;
+}
+
+.team.red {
   border: 2px solid #e74c3c;
-  box-shadow: 0 0 15px rgba(231, 76, 60, 0.3);
 }
 
-#team2-info {
+.team.blue {
   border: 2px solid #3498db;
-  box-shadow: 0 0 15px rgba(52, 152, 219, 0.3);
-}
-
-.controls-help {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-  padding: 15px;
-  border-radius: 12px;
-  text-align: center;
-  flex-grow: 1;
-  max-width: 300px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.controls-help h4 {
-  margin-top: 0;
-  color: #3498db;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .canvas-container {
-  background: linear-gradient(135deg, #34495e, #2c3e50);
-  padding: 15px;
-  border-radius: 15px;
-  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.3);
+  background: #34495e;
+  padding: 10px;
+  border-radius: 10px;
 }
 
 canvas {
   display: block;
   margin: 0 auto;
-  background: linear-gradient(to bottom, #87CEEB 0%, #98FB98 70%, #8B4513 100%);
-  border: 3px solid #2c3e50;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  border: 2px solid #2c3e50;
+  background: url(assets/fondo-juego-2d.avif) no-repeat center center;
+  background-size: cover;
 }
 
-.game-controls {
+.controls {
   display: flex;
+  font-size: 20px;
   justify-content: space-around;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-  padding: 20px;
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.turn-info,
-.power-info,
-.angle-info {
-  text-align: center;
-}
-
-.player-item {
-  margin: 10px 0;
-  padding: 8px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.player-item p {
-  margin: 5px 0;
-}
-
-.health-value {
-  font-weight: bold;
-  color: #2ecc71;
-}
-
-#powerDisplay,
-#angleDisplay,
-#currentPlayer {
-  font-weight: bold;
-  color: #e74c3c;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 14px;
+  border-radius: 10px;
 }
 
 .game-over {
@@ -200,26 +120,8 @@ canvas {
   left: 50%;
   transform: translate(-50%, -50%);
   background: rgba(0, 0, 0, 0.9);
-  padding: 40px;
+  padding: 30px;
   border-radius: 15px;
   text-align: center;
   z-index: 1000;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-.restart-button {
-  padding: 12px 24px;
-  font-size: 18px;
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 20px;
-  transition: all 0.3s;
-}
-
-.restart-button:hover {
-  background-color: #2980b9;
-  transform: translateY(-2px);
 }
