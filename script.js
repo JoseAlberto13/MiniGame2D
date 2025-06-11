@@ -215,6 +215,115 @@ function generateTerrain() {
   }
 }
 
+
+// Wind Particles - Animación Viento
+let windLines = [];
+let windParticles = [];
+
+function createWindLines() {
+  windLines = [];
+  for (let i = 0; i < 15; i++) {
+    windLines.push({
+      x: Math.random() * W,
+      y: Math.random() * (H * 0.85),
+      length: 20 + Math.random() * 30,
+      angle: 0,
+      speed: 0.5 + Math.random() * 1,
+      curve: 0.6 + Math.random() * 0.4,
+      opacity: 0.2 + Math.random() * 0.3
+    });
+  }
+}
+
+
+function createWindParticles() {
+  windParticles = [];
+  for (let i = 0; i < 30; i++) {
+    windParticles.push({
+      x: Math.random() * W,
+      y: H * 0.35 + Math.random() * (H * 0.5),
+      baseY: 0, // base para oscilación
+      size: 2 + Math.random() * 2,
+      opacity: Math.random() * 0.6 + 0.3,
+      drift: Math.random() * 2 * Math.PI, // desfase de oscilación
+      speedY: 0.3 + Math.random() * 0.2,   // velocidad vertical suave
+    });
+  }
+}
+
+function drawWindLines() {
+  const absWind = Math.abs(wind) * 1000;
+  if (absWind < 7) return; // No mostrar si el viento es bajo
+
+  windLines.forEach(l => {
+    // Movimiento
+    const direction = wind > 0 ? 1 : -1;
+    l.x += direction * (absWind / 40 + l.speed);
+    l.angle += 0.1;
+
+    // Reset si salen de pantalla
+    if (l.x < -50) l.x = W + 50;
+    if (l.x > W + 50) l.x = -50;
+
+    // Dibujar línea curva estilo viento
+    ctx.beginPath();
+    ctx.globalAlpha = l.opacity;
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.75)';
+    ctx.lineWidth = 1.2;
+
+    for (let i = 0; i < l.length; i++) {
+      const t = i / l.length;
+      const cx = l.x + direction * i;
+      const cy = l.y + Math.sin(l.angle + t * 1 * Math.PI) * l.curve * 6;
+
+      if (i === 0) ctx.moveTo(cx, cy);
+      else ctx.lineTo(cx, cy);
+    }
+
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  });
+}
+
+function drawWindParticles() {
+  const absWind = Math.abs(wind) * 1000;
+  if (absWind < 7) return; // No dibujar partículas
+
+  windParticles.forEach(p => {
+    // Movimiento horizontal por viento
+    let baseSpeed = absWind / 30;
+    p.x += wind > 0 ? baseSpeed : -baseSpeed;
+
+    // Movimiento oscilante vertical (flotación)
+    p.drift += 0.05; // fase de oscilación
+    const floatOffset = Math.sin(p.drift) * 3;
+
+    // Desvanecimiento al borde
+    const fadeMargin = 20;
+    if (p.x < fadeMargin || p.x > W - fadeMargin) {
+      p.opacity = Math.max(0, p.opacity - 0.02);
+    }
+
+    // Reiniciar si desaparece o sale del canvas
+    if (p.x > W + 20 || p.x < -20 || p.opacity <= 0) {
+      p.x = Math.random() * W;
+      p.y = H * 0.7 + Math.random() * (H * 0.3);
+      p.opacity = Math.random() * 0.6 + 0.3;
+      p.drift = Math.random() * Math.PI * 2;
+    }
+
+    // Dibujar partícula
+    ctx.beginPath();
+    ctx.globalAlpha = p.opacity;
+    ctx.fillStyle = `rgba(0, 161, 13, 0.73)`;
+    ctx.arc(p.x, p.y + floatOffset, p.size, 3, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  });
+}
+
+
+// Generació Terrreno
 function getTerrainAt(x) {
   const step = W / 50;
   const i = Math.floor(x / step);
@@ -247,7 +356,9 @@ function startGame() {
     game.players.push(new Player(80 + i * 60, 1, `Rojo ${i + 1}`, colors1));
     game.players.push(new Player(W - 80 - i * 60, 2, `Azul ${i + 1}`, colors2));
   }
-  startTurnTimer(); 
+  createWindLines();
+  createWindParticles();
+  startTurnTimer();
   updateGame();
   updateUI();
 }
@@ -260,10 +371,11 @@ function updateUI() {
   const teams = [[], []];
   game.players.forEach(p => teams[p.team - 1].push(p));
 
+  // Actualizar vida en marcador
   ['team1', 'team2'].forEach((id, i) => {
     document.getElementById(id).innerHTML =
       `<h3>${i ? '🔵 Azul' : '🔴 Rojo'}</h3>` +
-      teams[i].map(p => `<div>${p.name}: ${p.health}💚</div>`).join('');
+      teams[i].map(p => `<div>${p.name}: ${Math.round(p.health)}💚</div>`).join('');
   });
 
   const current = game.players[game.current];
@@ -420,6 +532,8 @@ function checkGameOver() {
     });
     
     // Wind indicator mejorado
+    drawWindLines();
+    drawWindParticles();
     drawWindIndicator();
   }
   
