@@ -101,7 +101,7 @@ canvas {
   display: block;
   margin: 0 auto;
   border: 2px solid #2c3e50;
-  background: url(assets/fondo-juego-2d.avif) no-repeat center center;
+  background: url(assets/images/fondo-juego-2d.avif) no-repeat center center;
   background-size: cover;
 }
 
