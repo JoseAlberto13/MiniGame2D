@@ -188,7 +188,7 @@ function drawWindIndicator() {
   ctx.fill();
 
   // Indicador de cambio de viento
-  if (game.windChangeCounter === 1) {
+  if (game.windChangeCounter === game.windChangePerTurn - 1) {
     ctx.fillStyle = 'rgba(250, 150, 0, 0.89)';
     ctx.font = 'bold 16px Arial';
     ctx.fillText('¡Cambiará próximo turno!', centerX, centerY + 60);
@@ -209,7 +209,7 @@ function draw() {
   ctx.fill();
 
   // Players
-  game.players.forEach(p => p.draw());
+  drawPlayers();
 
   // Projectiles
   game.projectiles.forEach(proj => proj.draw());

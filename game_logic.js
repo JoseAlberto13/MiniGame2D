@@ -2,8 +2,12 @@
 let game = {
   mode: 1, players: [], current: 0, power: 0, angle: 45,
   projectiles: [], explosions: [], terrain: [], locked: false,
-  turnCount: 0, windChangeCounter: 0
+  turnCount: 0, windChangeCounter: 0, windChangePerTurn: 4
 };
+
+const backgroundSound = new Audio('assets/audio/background-sound-01.mp3');
+backgroundSound.volume = 0.3;
+backgroundSound.loop = true;
 
 const gravity = 0.2;
 let wind = (Math.random() - 0.5) * 0.08;
@@ -35,6 +39,7 @@ let timerInterval = null;
 
 function startTurnTimer() {
   turnTimer = 20; // Reset timer
+  youTurnSound.play();
 
   if (timerInterval) clearInterval(timerInterval);
 
@@ -43,7 +48,7 @@ function startTurnTimer() {
 
     if (turnTimer <= 0) {
       clearInterval(timerInterval);
-      nextTurn(); // debes tener esta función ya definida
+      nextTurn();
     }
   }, 1000);
 }
@@ -75,6 +80,7 @@ function startGame() {
   startTurnTimer();
   updateGame();
   updateUI();
+  backgroundSound.play();
 }
 
 function updateGame() {
@@ -88,7 +94,7 @@ function updateUI() {
   // Actualizar vida en marcador
   ['team1', 'team2'].forEach((id, i) => {
     document.getElementById(id).innerHTML =
-      `<h3>${i ? '🔵 Azul' : '🔴 Rojo'}</h3>` +
+      `<h2 style="margin: 8px;">${i ? '🔵 Azul' : '🔴 Rojo'}</h2>` +
       teams[i].map(p => `<div>${p.name}: ${Math.round(p.health)}💚</div>`).join('');
   });
 
@@ -105,13 +111,27 @@ function updateUI() {
   windElement.innerHTML = `<span style="color: ${windColor}">${windDirection} ${windStrength}%</span>`;
 }
 
+function drawPlayers() {
+  const currentPlayer = game.players[game.current];
+
+  // Dibujar todos excepto el jugador actual
+  game.players.forEach(p => {
+    if (p !== currentPlayer) p.draw();
+  });
+
+  // Dibujar el jugador actual encima
+  if (currentPlayer && currentPlayer.health > 0) {
+    currentPlayer.draw();
+  }
+}
+
 function shoot() {
   if (game.locked || game.power === 0) return;
 
   game.locked = true;
   const p = game.players[game.current];
   const rad = game.angle * Math.PI / 180;
-  const power = game.power / 100 * 12;
+  const power = game.power / 100 * 16; // Ajustar potencia
 
   const x = p.x + Math.cos(rad) * 25;
   const y = p.y - 5 - Math.sin(rad) * 25;
@@ -130,7 +150,7 @@ function nextTurn() {
   game.players[game.current].moved = 0;
 
   // Cambiar viento cada X turnos
-  if (game.windChangeCounter >= 4) {
+  if (game.windChangeCounter >= game.windChangePerTurn) {
     wind = (Math.random() - 0.5) * 0.1;
     game.windChangeCounter = 0;
   }

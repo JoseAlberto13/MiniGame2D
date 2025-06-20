@@ -79,8 +79,10 @@ body {
 }
 
 .team {
+  border-radius: 16px;
   min-width: 150px;
   text-align: center;
+  padding: 4px;
 }
 
 .team.red {

@@ -72,6 +72,20 @@ class Player {
       ctx.fillStyle = "#f1c40f";
       ctx.textAlign = "center";
       ctx.fillText(`⏱ ${turnTimer}s`, x, y - 48);
+      
+      // Power bar (vertical)
+      const maxHeight = 40;
+      const powerRatio = game.power / 100;
+      const barX = x + 40; // al lado derecho del tanque
+      const barY = y + 12; // alineado con el tanque
+      // Fondo
+      ctx.fillStyle = '#2c3e50';
+      ctx.fillRect(barX, barY - maxHeight, 10, maxHeight);
+      // Color dinámico
+      const barColor = powerRatio > 0.66 ? '#e74c3c' : powerRatio > 0.33 ? '#f39c12' : '#2ecc71';
+      ctx.fillStyle = barColor;
+      // Barra
+      ctx.fillRect(barX, barY - maxHeight + (1 - powerRatio) * maxHeight, 10, maxHeight * powerRatio);
     }
   }
 
@@ -164,6 +178,8 @@ class Projectile {
 // Sonidos
 const shotSound = new Audio('assets/audio/shot.mp3');
 const impactSound = new Audio('assets/audio/impact.mp3');
-  
-shotSound.volume = 0.5;
-impactSound.volume = 0.6;
+const youTurnSound = new Audio('assets/audio/next-turn-pop.mp3');
+
+shotSound.volume = 0.8;
+impactSound.volume = 0.9;
+youTurnSound.volume = 0.2;
