@@ -5,6 +5,7 @@ class Player {
     this.health = 100; this.angle = team === 1 ? 45 : 135;
     this.moved = 0; // cantidad de movimiento en el turno
     this.y = getTerrainAt(x) - 15;
+    this.direction = team === 1 ? 'right' : 'left';  // dirección del tanque
   }
 
   draw() {
@@ -76,7 +77,7 @@ class Player {
       // Power bar (vertical)
       const maxHeight = 40;
       const powerRatio = game.power / 100;
-      const barX = x + 40; // al lado derecho del tanque
+      const barX = this.direction === "right" ? x - 50 : x + 40;
       const barY = y + 12; // alineado con el tanque
       // Fondo
       ctx.fillStyle = '#2c3e50';
