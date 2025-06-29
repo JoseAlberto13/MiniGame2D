@@ -18,6 +18,10 @@
         <button class="btn mode-btn" data-players="2">2 vs 2</button>
         <button class="btn mode-btn" data-players="3">3 vs 3</button>
       </div>
+      <div class="terrainSelect">
+        <label for="terrainSelect"><span class="emoji">🏞️</span> Escenario:</label>
+        <select id="terrainSelect"></select>
+      </div>
       <button id="startBtn" class="btn" disabled>Iniciar Juego</button>
     </div>
 
@@ -25,7 +29,7 @@
       <div class="info">
         <div class="team red" id="team1"></div>
         <div style="text-align: center; font-size: 22px;">
-          <h3>🎮 Controles</h3>
+          <h3><span class="emoji">🎮</span> Controles</h3>
           <p>Mover: A/D | Ángulo: W/S | Disparar: MANTENER ESPACIO</p>
         </div>
         <div class="team blue" id="team2"></div>
@@ -36,15 +40,16 @@
       </div>
 
       <div class="controls">
-        <div>🎯 Turno: <span id="player">-</span></div>
-        <div>⚡ Potencia: <span id="power">0</span>%</div>
-        <div>📐 Ángulo: <span id="angle">45</span>°</div>
-        <div>💨 Viento: <span id="windInfo">-</span></div>
+        <div><span class="emoji">🎯</span> Turno: <span id="player">-</span></div>
+        <div><span class="emoji">⚡</span> Potencia: <span id="power">0</span>%</div>
+        <div><span class="emoji">📐</span> Ángulo: <span id="angle">45</span>°</div>
+        <div><span class="emoji">💨</span> Viento: <span id="windInfo">-</span></div>
       </div>
     </div>
   </div>
   <script src="canvas_elements.js"></script>
   <script src="player_elements.js"></script>
+  <script src="assets/escenarios/terrains.js"></script>
   <script src="game_controls.js"></script>
   <script src="game_logic.js"></script>
 </body>
