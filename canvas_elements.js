@@ -2,23 +2,58 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const W = canvas.width, H = canvas.height;
 
-function generateTerrain() {
-  game.terrain = [];
-  let h = H - 60;
-  for (let i = 0; i <= 50; i++) {
-    const x = i * W / 50;
-    h += (Math.random() - 0.5) * 20;
-    h = Math.max(H - 120, Math.min(H - 40, h));
-    game.terrain.push({ x, y: h });
+// Game object
+function interpolateTerrain(points, segments = 50) {
+  const interpolated = [];
+  const totalLength = points[points.length - 1].x;
+
+  for (let i = 0; i <= segments; i++) {
+    const x = i * totalLength / segments;
+
+    // Buscar el par de puntos entre los que está este x
+    let j = 0;
+    while (j < points.length - 1 && points[j + 1].x < x) j++;
+
+    const p1 = points[j];
+    const p2 = points[j + 1] || points[j];
+
+    const t = (x - p1.x) / (p2.x - p1.x || 1);
+    const y = p1.y + (p2.y - p1.y) * t;
+
+    interpolated.push({ x, y });
   }
 
-  // Smooth
-  for (let pass = 0; pass < 2; pass++) {
-    for (let i = 1; i < game.terrain.length - 1; i++) {
-      const avg = (game.terrain[i - 1].y + game.terrain[i].y + game.terrain[i + 1].y) / 3;
-      game.terrain[i].y = avg;
+  return interpolated;
+}
+
+function generateTerrain() {
+  const selectedTerrain = document.getElementById("terrainSelect")?.value || "";
+
+  if (predefinedTerrains[selectedTerrain]) {
+    game.terrain = interpolateTerrain(predefinedTerrains[selectedTerrain]);
+    game.terrainType = selectedTerrain;
+  } else {
+    game.terrain = [];
+    let h = H - 60;
+    for (let i = 0; i <= 50; i++) {
+      const x = i * W / 50;
+      h += (Math.random() - 0.5) * 20;
+      h = Math.max(H - 120, Math.min(H - 40, h));
+      game.terrain.push({ x, y: h });
     }
+
+    // Suavizado
+    for (let pass = 0; pass < 2; pass++) {
+      for (let i = 1; i < game.terrain.length - 1; i++) {
+        const avg = (game.terrain[i - 1].y + game.terrain[i].y + game.terrain[i + 1].y) / 3;
+        game.terrain[i].y = avg;
+      }
+    }
+
+    game.terrainType = "random";
   }
+    // Carga la nueva imagen de fondo cuando el terreno cambia
+  currentBackground.src = `assets/images/${terrainBackgroundImages[game.terrainType]}`;
 }
 
 // Wind Particles - Animación Viento
@@ -197,16 +232,67 @@ function drawWindIndicator() {
   ctx.textAlign = 'left'; // Resetear alineación
 }
 
+const terrainBackgroundImages = {
+  "flat": "flat-fondo.jpg",
+  "hills": "hills-fondo.jpg",
+  "mountain": "mountain-fondo.jpg",
+  "valley": "valley-fondo.jpg",
+  "random": "fondo-juego-2d.avif"
+};
+
+// Variable para la imagen de fondo actual
+let currentBackground = new Image();
+
+// Inicializa con una imagen por defecto o la que corresponda al terreno inicial
+currentBackground.src = `assets/images/${terrainBackgroundImages[game.terrainType || 'random']}`;
+
 function draw() {
   ctx.clearRect(0, 0, W, H);
 
-  // Terrain
-  ctx.fillStyle = '#228B22';
-  ctx.beginPath();
-  ctx.moveTo(0, H);
-  game.terrain.forEach(t => ctx.lineTo(t.x, t.y));
-  ctx.lineTo(W, H);
-  ctx.fill();
+  // 1. Dibuja la imagen de fondo con lógica "cover" similar a CSS
+  if (currentBackground.complete && currentBackground.naturalWidth > 0) {
+    const img = currentBackground;
+    const imgAspect = img.naturalWidth / img.naturalHeight;
+    const canvasAspect = W / H;
+
+    let sx, sy, sWidth, sHeight; // Source (recorte de la imagen)
+    let dx, dy, dWidth, dHeight; // Destination (dibujo en el canvas)
+
+    if (imgAspect > canvasAspect) {
+      // La imagen es más ancha que el canvas, se ajusta a la altura del canvas
+      sHeight = img.naturalHeight;
+      sWidth = sHeight * canvasAspect;
+      sx = (img.naturalWidth - sWidth) / 2; // Centra horizontalmente
+      sy = 0;
+
+      dWidth = W;
+      dHeight = H;
+      dx = 0;
+      dy = 0;
+    } else {
+      // La imagen es más alta que el canvas, se ajusta al ancho del canvas
+      sWidth = img.naturalWidth;
+      sHeight = sWidth / canvasAspect;
+      sx = 0;
+      sy = (img.naturalHeight - sHeight) / 2; // Centra verticalmente
+
+      dWidth = W;
+      dHeight = H;
+      dx = 0;
+      dy = 0;
+    }
+    
+    // Dibujar la imagen recortada y escalada
+    ctx.drawImage(img, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+
+  } else {
+    // Fallback de color si la imagen no se ha cargado
+    ctx.fillStyle = "#87CEEB"; // Un color de cielo predeterminado
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  // Llama a drawTerrain para dibujar la forma y colores específicos del terreno
+  drawTerrain(ctx, game.terrain, game.terrainType);
 
   // Players
   drawPlayers();
