@@ -60,6 +60,16 @@ function generateTerrain() {
 let windLines = [];
 let windParticles = [];
 
+// New: Define particle colors based on terrain type
+const TERRAIN_PARTICLE_COLORS = {
+  "random": 'rgba(0, 161, 13, 0.73)', // Greenish for random/default
+  "flat": 'rgba(150, 150, 150, 0.73)', // Gray for flat
+  "hills": 'rgba(24, 143, 0, 0.73)',   // Brown for hills
+  "mountain": 'rgba(200, 200, 200, 0.73)', // Light gray/white for mountains
+  "valley": 'rgba(255, 200, 0, 0.73)', // Yellow/orange for desert
+  // Add more terrain types and their corresponding colors here
+};
+
 function createWindLines() {
   windLines = [];
   for (let i = 0; i < 15; i++) {
@@ -108,7 +118,7 @@ function drawWindLines() {
     // Dibujar línea curva estilo viento
     ctx.beginPath();
     ctx.globalAlpha = l.opacity;
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.75)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.91)';
     ctx.lineWidth = 1.2;
 
     for (let i = 0; i < l.length; i++) {
@@ -128,6 +138,9 @@ function drawWindLines() {
 function drawWindParticles() {
   const absWind = Math.abs(wind) * 1000;
   if (absWind < 10) return; // No dibujar partículas
+
+  // Color de las partiuclas basado en el terreno seleccionado
+  const particleColor = TERRAIN_PARTICLE_COLORS[game.terrainType] || TERRAIN_PARTICLE_COLORS["random"];
 
   windParticles.forEach(p => {
     // Movimiento horizontal por viento
@@ -155,7 +168,7 @@ function drawWindParticles() {
     // Dibujar partícula
     ctx.beginPath();
     ctx.globalAlpha = p.opacity;
-    ctx.fillStyle = `rgba(0, 161, 13, 0.73)`;
+    ctx.fillStyle = particleColor; // Ahora usa el color dinámico
     ctx.arc(p.x, p.y + floatOffset, p.size, 3, Math.PI * 2);
     ctx.fill();
     ctx.globalAlpha = 1;
